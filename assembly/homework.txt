@@ -1,0 +1,54 @@
+section	.data
+
+msg db 'I am trying very hard ...I am so tired but the sum is ', 0xa
+len equ $ - msg
+num1 db 3
+num2 db 4
+
+section	.bss
+
+result resb 2 ; result will take 2 bytes of memory to store the sum
+
+section	.text
+global _start
+_start:
+    ; move the data from memory
+    movzx eax, byte [num1]
+    movzx ebx, byte [num2]
+    
+    ; add the data
+    add eax, ebx
+    
+    ; convert the sum to ASCII character and store it in result
+    add eax, '0'
+    mov byte [result], al
+    mov byte [result+1], 0 ; add null terminator
+    
+    ; print the message
+    mov edx, len
+    mov ecx, msg
+    mov ebx, 1
+    mov eax, 4
+    int 0x80
+    
+    ; print the result
+    mov edx, 2 ; length of the result string including null terminator
+    mov ecx, result
+    mov ebx, 1
+    mov eax, 4
+    int 0x80
+    
+    ; print "You rock!" message
+    mov edx, 9 ; length of message including null terminator
+    mov ecx, rockmsg
+    mov ebx, 1
+    mov eax, 4
+    int 0x80
+    
+    ; exit the program
+    mov eax, 1
+    xor ebx, ebx
+    int 0x80
+
+rockmsg:
+    db 'You rock!', 0xa ; message string
